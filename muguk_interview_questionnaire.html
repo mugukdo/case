@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>무극의 도 — 인터뷰 질문지</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+@page { size: A4; margin: 20mm 18mm; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans KR',sans-serif; font-weight:300; color:#1a1208; background:white; font-size:11pt; line-height:1.7; }
+
+.page { max-width:780px; margin:0 auto; padding:32px 40px; }
+
+/* COVER */
+.cover { text-align:center; padding:60px 0 40px; border-bottom:2px solid #1a1208; margin-bottom:40px; }
+.cover-char { font-family:'Nanum Myeongjo',serif; font-size:72pt; color:#b8933a; line-height:1; margin-bottom:16px; }
+.cover-title { font-family:'Nanum Myeongjo',serif; font-size:22pt; font-weight:700; margin-bottom:8px; }
+.cover-sub { font-size:11pt; color:#7a6e5f; letter-spacing:.15em; margin-bottom:32px; }
+.cover-desc { font-size:10pt; color:#7a6e5f; line-height:2; max-width:480px; margin:0 auto; }
+.cover-meta { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:32px; text-align:left; }
+.meta-box { border:1px solid #ccc3b3; padding:12px 16px; }
+.meta-label { font-size:8pt; letter-spacing:.35em; text-transform:uppercase; color:#b8933a; margin-bottom:6px; }
+.meta-line { border-bottom:1px solid #ccc3b3; height:22px; margin-top:4px; }
+
+/* GUIDE BOX */
+.guide-box { background:#faf7f1; border:1px solid #ccc3b3; border-left:3px solid #b8933a; padding:20px 24px; margin-bottom:32px; }
+.guide-title { font-family:'Nanum Myeongjo',serif; font-size:12pt; font-weight:700; margin-bottom:12px; color:#1a1208; }
+.guide-list { list-style:none; display:flex; flex-direction:column; gap:8px; }
+.guide-list li { font-size:10pt; color:#3a2e1e; padding-left:16px; position:relative; line-height:1.7; }
+.guide-list li::before { content:'·'; position:absolute; left:4px; color:#b8933a; }
+
+/* VERIFY */
+.section-title { font-family:'Nanum Myeongjo',serif; font-size:14pt; font-weight:700; border-bottom:1px solid #1a1208; padding-bottom:8px; margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+.section-num { font-size:8pt; letter-spacing:.4em; color:#b8933a; font-family:'Noto Sans KR',sans-serif; font-weight:400; }
+.verify-grid { display:grid; gap:10px; margin-bottom:28px; }
+.verify-item { display:flex; align-items:flex-start; gap:12px; padding:10px 14px; border:1px solid #ccc3b3; }
+.check-sq { width:14px; height:14px; border:1px solid #7a6e5f; flex-shrink:0; margin-top:2px; }
+.vi-text { font-size:10pt; line-height:1.65; }
+.vi-sub { font-size:9pt; color:#7a6e5f; margin-top:2px; line-height:1.6; }
+.warn-item { border-color:#e07070; background:#fff8f8; }
+.warn-item .vi-text { color:#7a2e14; }
+
+/* QUESTIONS */
+.phase-header { background:#1e150a; color:#f4efe4; padding:10px 16px; margin:28px 0 16px; display:flex; align-items:center; gap:12px; }
+.ph-num { font-size:8pt; letter-spacing:.4em; color:#b8933a; }
+.ph-title { font-family:'Nanum Myeongjo',serif; font-size:12pt; }
+.ph-concept { margin-left:auto; font-size:8pt; color:rgba(244,239,228,.5); letter-spacing:.1em; }
+
+.q-item { margin-bottom:28px; break-inside:avoid; }
+.q-header { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+.q-badge { font-size:8pt; letter-spacing:.35em; color:#b8933a; border:1px solid #b8933a; padding:2px 8px; }
+.q-text { font-family:'Nanum Myeongjo',serif; font-size:13pt; font-weight:700; margin-bottom:6px; line-height:1.5; }
+.q-sub-text { font-size:9.5pt; color:#7a6e5f; font-style:italic; margin-bottom:10px; line-height:1.7; }
+.q-answer-box { border-bottom:1px solid #ccc3b3; height:28px; margin-bottom:6px; }
+.q-answer-lines { display:flex; flex-direction:column; gap:0; }
+.answer-line { border-bottom:1px dotted #ccc3b3; height:24px; }
+.q-followup { margin-top:10px; padding:10px 14px; background:#faf7f1; border-left:2px solid #dfc27d; }
+.qf-label { font-size:8pt; letter-spacing:.3em; color:#b8933a; margin-bottom:6px; text-transform:uppercase; }
+.qf-list { list-style:none; display:flex; flex-direction:column; gap:4px; }
+.qf-list li { font-size:9.5pt; color:#7a6e5f; padding-left:12px; position:relative; line-height:1.6; }
+.qf-list li::before { content:'→'; position:absolute; left:0; color:#b8933a; opacity:.6; }
+
+/* SCORING */
+.score-table { width:100%; border-collapse:collapse; margin-bottom:20px; }
+.score-table th { font-size:8pt; letter-spacing:.35em; text-transform:uppercase; color:#b8933a; border-bottom:1px solid #1a1208; padding:8px 12px; text-align:left; font-weight:400; }
+.score-table td { padding:10px 12px; border-bottom:1px solid #ccc3b3; font-size:10pt; vertical-align:top; }
+.score-table td:first-child { font-family:'Nanum Myeongjo',serif; font-size:11pt; width:140px; white-space:nowrap; }
+.score-box { width:40px; height:20px; border:1px solid #ccc3b3; display:inline-block; }
+
+/* DECISION */
+.decision-box { border:1px solid #1a1208; padding:20px 24px; margin-top:24px; }
+.decision-title { font-family:'Nanum Myeongjo',serif; font-size:12pt; font-weight:700; margin-bottom:16px; }
+.decision-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.decision-check { width:14px; height:14px; border:1px solid #1a1208; flex-shrink:0; }
+.decision-label { font-size:11pt; }
+.decision-reason { margin-top:16px; }
+.dr-label { font-size:8pt; letter-spacing:.3em; text-transform:uppercase; color:#7a6e5f; margin-bottom:6px; }
+.dr-lines { display:flex; flex-direction:column; gap:2px; }
+.dr-line { border-bottom:1px dotted #ccc3b3; height:24px; }
+
+/* FOOTER */
+.doc-footer { margin-top:40px; padding-top:16px; border-top:1px solid #ccc3b3; display:flex; justify-content:space-between; align-items:center; }
+.df-left { font-size:8pt; color:#7a6e5f; }
+.df-right { font-family:'Nanum Myeongjo',serif; font-size:14pt; color:#b8933a; }
+
+/* PAGE BREAK */
+.page-break { break-before:page; padding-top:32px; }
+
+@media print {
+  body { font-size:10pt; }
+  .no-print { display:none; }
+  .page { padding:0; }
+}
+.print-btn { position:fixed; bottom:28px; right:28px; background:#b8933a; color:white; border:none; padding:14px 24px; font-size:12px; font-family:'Noto Sans KR',sans-serif; letter-spacing:.2em; cursor:pointer; box-shadow:0 4px 20px rgba(184,147,58,.4); }
+.print-btn:hover { background:#dfc27d; color:#1a1208; }
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">🖨 인쇄 / PDF 저장</button>
+
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-char">無極</div>
+  <div class="cover-title">무극의 도 — 사례 인터뷰 질문지</div>
+  <div class="cover-sub">The Way of Infinite Emptiness · Case Interview Guide</div>
+  <div class="cover-desc">
+    이 질문지는 무극의 도를 실천하며 살아온 인물의 삶을 기록하기 위한<br>
+    심층 인터뷰 가이드입니다. 인터뷰어는 자연스러운 대화 흐름을 유지하며<br>
+    대상자의 구체적인 경험과 사건을 중심으로 이야기를 이끌어 내세요.
+  </div>
+  <div class="cover-meta">
+    <div class="meta-box">
+      <div class="meta-label">인터뷰 일시</div>
+      <div class="meta-line"></div>
+    </div>
+    <div class="meta-box">
+      <div class="meta-label">인터뷰어</div>
+      <div class="meta-line"></div>
+    </div>
+    <div class="meta-box">
+      <div class="meta-label">대상자 (실명 또는 코드)</div>
+      <div class="meta-line"></div>
+    </div>
+    <div class="meta-box">
+      <div class="meta-label">추천인</div>
+      <div class="meta-line"></div>
+    </div>
+    <div class="meta-box">
+      <div class="meta-label">인터뷰 방식</div>
+      <div class="meta-line"></div>
+    </div>
+    <div class="meta-box">
+      <div class="meta-label">소요 시간</div>
+      <div class="meta-line"></div>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDE -->
+<div class="guide-box">
+  <div class="guide-title">인터뷰어 가이드라인</div>
+  <ul class="guide-list">
+    <li>이 인터뷰의 목적은 대상자를 평가하는 것이 아니라, 삶의 이야기를 기록하는 것입니다. 편안한 분위기를 유지하세요.</li>
+    <li>정답이 없습니다. "착하게 살았어요" 같은 추상적 답변보다 구체적 사건·날짜·장소·감정을 끌어내는 것이 핵심입니다.</li>
+    <li>추가 질문(→)은 답변이 너무 짧거나 추상적일 때 사용하세요. 강요하지 마세요.</li>
+    <li>녹음 전 반드시 동의를 받고, 익명 처리 여부를 확인하세요.</li>
+    <li>인터뷰 후 48시간 이내에 내용을 디지털로 옮겨 AI 정리 도구에 입력하세요.</li>
+  </ul>
+</div>
+
+<!-- SECTION 1: VERIFY -->
+<div class="section-title">
+  <span class="section-num">SECTION 01</span>
+  인터뷰 전 5단계 검증 체크리스트
+</div>
+
+<div class="verify-grid">
+  <div class="verify-item">
+    <div class="check-sq"></div>
+    <div><div class="vi-text">① 추천인 실명제 — 추천인의 실명과 연락처를 확인했다.</div><div class="vi-sub">추천인이 대상자를 직접 알고, 이해관계 없이 추천했음을 확인.</div></div>
+  </div>
+  <div class="verify-item">
+    <div class="check-sq"></div>
+    <div><div class="vi-text">② 구체성 통과 예상 — 날짜·장소·상황이 있는 사건을 말할 수 있을 것으로 판단된다.</div><div class="vi-sub">사전 대화에서 구체적 사례가 나왔는지 확인.</div></div>
+  </div>
+  <div class="verify-item">
+    <div class="check-sq"></div>
+    <div><div class="vi-text">③ 일관성 검증 동의 — 같은 사건을 다른 시점에서 재질문할 수 있음에 동의했다.</div><div class="vi-sub">인터뷰 시작 전 대상자에게 안내 필요.</div></div>
+  </div>
+  <div class="verify-item">
+    <div class="check-sq"></div>
+    <div><div class="vi-text">④ 교차 검증 가능 — 대상자의 이야기를 확인해 줄 제3자가 존재한다.</div><div class="vi-sub">가족, 동료, 지역 사회 관계자 등.</div></div>
+  </div>
+  <div class="verify-item">
+    <div class="check-sq"></div>
+    <div><div class="vi-text">⑤ 무극 6원칙 최소 3개 해당 — 사전 대화에서 3개 이상의 원칙에 해당하는 사례가 예상된다.</div><div class="vi-sub">①자기중심 ②자기객관화 ③감사방향 ④중심없을때 ⑤사람안하늘 ⑥상생</div></div>
+  </div>
+</div>
+
+<div style="font-size:9pt;letter-spacing:.3em;text-transform:uppercase;color:#e07070;margin-bottom:10px">⚠ 경고 신호 — 해당 시 인터뷰 보류 검토</div>
+<div class="verify-grid">
+  <div class="verify-item warn-item">
+    <div class="check-sq" style="border-color:#e07070"></div>
+    <div><div class="vi-text">자기 자랑이 주목적으로 보인다 — 명성·지위·성공을 강조하려는 의도가 뚜렷하다.</div></div>
+  </div>
+  <div class="verify-item warn-item">
+    <div class="check-sq" style="border-color:#e07070"></div>
+    <div><div class="vi-text">구체적 사건 없이 추상적 미덕만 나열한다 — "항상 남을 도우며 살았어요" 수준에 그친다.</div></div>
+  </div>
+  <div class="verify-item warn-item">
+    <div class="check-sq" style="border-color:#e07070"></div>
+    <div><div class="vi-text">추천인이 본인 또는 직계 가족뿐이다 — 이해관계 없는 제3자 추천이 없다.</div></div>
+  </div>
+</div>
+
+<!-- SECTION 2: QUESTIONS -->
+<div class="page-break">
+<div class="section-title">
+  <span class="section-num">SECTION 02</span>
+  심층 인터뷰 질문지 (11문항)
+</div>
+
+<!-- 워밍업 -->
+<div class="phase-header">
+  <span class="ph-num">WARM-UP</span>
+  <span class="ph-title">워밍업 — 자기소개</span>
+  <span class="ph-concept">편안한 시작</span>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 01</span></div>
+  <div class="q-text">오늘 이렇게 이야기 나눠주셔서 감사합니다. 먼저 간단히 자기소개를 해 주시겠어요? 어릴 때부터 지금까지, 어떤 삶을 살아오셨는지 큰 흐름으로 이야기해 주세요.</div>
+  <div class="q-sub-text">편안하게 말씀해 주세요. 정답이 없습니다. 자유롭게 이야기해 주시면 됩니다.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>어린 시절 어떤 환경에서 자라셨나요?</li>
+      <li>살면서 가장 크게 영향받은 사건이나 사람이 있다면?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ① 자기 중심 -->
+<div class="phase-header">
+  <span class="ph-num">① 자기 중심</span>
+  <span class="ph-title">자기 중심 vs 이기심</span>
+  <span class="ph-concept">나를 주인공으로 살되, 선을 넘지 않는다</span>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 02</span></div>
+  <div class="q-text">살면서 "나는 이렇게 살겠다"는 기준이나 원칙을 세운 순간이 있으셨나요? 어떤 계기였고, 그 원칙이 무엇이었는지 구체적으로 말씀해 주세요.</div>
+  <div class="q-sub-text">특정 상황이나 사건을 중심으로 이야기해 주세요.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>그 원칙을 세우기 전과 후에 어떤 변화가 있었나요?</li>
+      <li>타인의 이익과 자신의 원칙이 충돌했을 때 어떻게 하셨나요?</li>
+      <li>그 원칙을 지키기 어려웠던 가장 힘든 순간은 언제였나요?</li>
+    </ul>
+  </div>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 03</span></div>
+  <div class="q-text">주변의 기대나 압박에 "아니오"라고 말한 경험이 있으신가요? 어떤 상황이었고, 어떻게 결정하셨나요?</div>
+  <div class="q-sub-text">구체적인 사례와 당시의 감정을 함께 말씀해 주세요.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>그 결정이 두려웠나요? 어떻게 극복하셨나요?</li>
+      <li>그 결정의 결과는 어떠했나요? 후회는 없나요?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ② 자기 객관화 -->
+<div class="phase-header">
+  <span class="ph-num">② 자기 객관화</span>
+  <span class="ph-title">복기(復棋)의 습관</span>
+  <span class="ph-concept">내 행동을 되돌아보는 훈련</span>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 04</span></div>
+  <div class="q-text">자신을 돌아보는 습관이나 방법이 있으신가요? 일기, 명상, 혼자만의 시간 등 어떤 방식으로 스스로를 점검하시나요?</div>
+  <div class="q-sub-text">구체적인 루틴이나 방법을 말씀해 주세요.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>언제부터 그 습관을 시작하셨나요? 계기가 있었나요?</li>
+      <li>자신의 행동을 되돌아보다가 불편한 진실을 발견한 적이 있나요? 어떻게 받아들이셨나요?</li>
+    </ul>
+  </div>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 05</span></div>
+  <div class="q-text">큰 실수나 잘못을 했을 때 어떻게 대처하셨나요? 자기 자신에게 어떻게 솔직해지셨나요?</div>
+  <div class="q-sub-text">되도록 구체적인 사례를 중심으로 이야기해 주세요.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>그 경험을 통해 무엇을 배우셨나요?</li>
+      <li>같은 실수를 반복하지 않기 위해 어떤 노력을 하셨나요?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ③ 감사의 방향 -->
+<div class="phase-header">
+  <span class="ph-num">③ 감사의 방향</span>
+  <span class="ph-title">보이는 것에 감사하라</span>
+  <span class="ph-concept">실제로 은혜를 준 존재에게 감사</span>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 06</span></div>
+  <div class="q-text">일상에서 감사를 느끼는 대상이나 순간이 있으신가요? 어떤 것에 가장 많이 감사함을 느끼시나요?</div>
+  <div class="q-sub-text">추상적인 것보다 구체적인 사람이나 사건을 말씀해 주세요.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>그 감사함을 어떻게 표현하시나요?</li>
+      <li>힘든 상황에서도 감사를 찾은 경험이 있나요?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ④ 유혹과 흔들림 -->
+<div class="phase-header">
+  <span class="ph-num">④ 자기 중심이 없을 때</span>
+  <span class="ph-title">유혹과 흔들림의 순간</span>
+  <span class="ph-concept">"왜 끌리는가"를 먼저 묻는다</span>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 07</span></div>
+  <div class="q-text">살면서 가장 크게 흔들렸던 순간은 언제였나요? 외부의 유혹이나 압박으로 자신의 기준을 잃을 뻔한 경험을 말씀해 주세요.</div>
+  <div class="q-sub-text">그 순간 어떻게 다시 중심을 잡으셨는지도 함께 말씀해 주세요.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>당시 주변에 그 유혹을 부추기는 사람이 있었나요?</li>
+      <li>어떤 계기로 다시 자신의 길로 돌아오셨나요?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ⑤ 내면의 힘 -->
+<div class="phase-header">
+  <span class="ph-num">⑤ 사람 안에 하늘이 있다</span>
+  <span class="ph-title">내면의 힘 — 人中天地一</span>
+  <span class="ph-concept">외부가 아닌 내면에서 중심을 찾는다</span>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 08</span></div>
+  <div class="q-text">어렵고 힘든 시기에 버티게 해 준 내면의 힘이 있다면 무엇인가요? 어떤 것이 내면의 중심이 되었나요?</div>
+  <div class="q-sub-text">외부의 도움이 아닌 자기 자신에게서 나온 힘에 대해 이야기해 주세요.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>그 내면의 힘은 언제 가장 강하게 느껴졌나요?</li>
+      <li>그 힘의 원천이 무엇이라고 생각하시나요?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ⑥ 상생 -->
+<div class="phase-header">
+  <span class="ph-num">⑥ 상생의 관계</span>
+  <span class="ph-title">더불어 사는 세상</span>
+  <span class="ph-concept">각자의 중심을 유지하며 서로 이롭게</span>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 09</span></div>
+  <div class="q-text">주변 사람들과의 관계에서 어떤 원칙을 갖고 계신가요? 사람을 대할 때 가장 중요하게 생각하는 것은 무엇인가요?</div>
+  <div class="q-sub-text">구체적인 관계 방식이나 사례를 이야기해 주세요.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>돈이나 지위를 보지 않고 사람을 있는 그대로 대한 경험이 있나요?</li>
+      <li>관계에서 손해를 봤지만 원칙을 지킨 경험이 있나요?</li>
+    </ul>
+  </div>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 10</span></div>
+  <div class="q-text">살면서 진정으로 "함께 잘 되었다"고 느낀 관계나 프로젝트가 있으신가요? 서로 이롭게 살았다는 경험을 구체적으로 말씀해 주세요.</div>
+  <div class="q-sub-text">일방적 도움이 아닌 상호 성장의 이야기를 기대합니다.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>그 관계에서 갈등은 없었나요? 어떻게 해결하셨나요?</li>
+      <li>그 경험이 지금의 당신에게 어떤 영향을 주었나요?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 마무리 -->
+<div class="phase-header">
+  <span class="ph-num">CLOSING</span>
+  <span class="ph-title">마무리</span>
+  <span class="ph-concept">솔직한 자기 평가</span>
+</div>
+
+<div class="q-item">
+  <div class="q-header"><span class="q-badge">Q 11</span></div>
+  <div class="q-text">마지막으로, 지금까지 살아오면서 가장 후회하는 것과 가장 잘했다고 생각하는 것을 하나씩 말씀해 주시겠어요? 그리고 앞으로 어떻게 살고 싶으신가요?</div>
+  <div class="q-sub-text">솔직한 답변을 기대합니다. 완벽하지 않아도 됩니다.</div>
+  <div class="q-answer-lines">
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+    <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+  </div>
+  <div class="q-followup">
+    <div class="qf-label">추가 질문</div>
+    <ul class="qf-list">
+      <li>그 후회는 지금 어떤 행동의 변화로 이어지고 있나요?</li>
+      <li>무극의 도라는 개념에 대해 어떻게 생각하시나요?</li>
+    </ul>
+  </div>
+</div>
+
+<!-- SECTION 3: SCORING -->
+<div class="page-break">
+<div class="section-title">
+  <span class="section-num">SECTION 03</span>
+  인터뷰 후 — 인터뷰어 평가표
+</div>
+
+<table class="score-table">
+  <thead>
+    <tr>
+      <th>평가 항목</th>
+      <th>평가 기준</th>
+      <th>점수 (0-25)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>구체성</td>
+      <td>날짜·장소·상황이 있는 구체적 사건을 3개 이상 언급했는가? 추상적 미덕 나열에 그쳤는가?</td>
+      <td><div class="score-box"></div> / 25</td>
+    </tr>
+    <tr>
+      <td>일관성</td>
+      <td>같은 사건을 다른 시점에서 재질문했을 때 일관된 답변을 했는가? 모순이나 불일치가 있었는가?</td>
+      <td><div class="score-box"></div> / 25</td>
+    </tr>
+    <tr>
+      <td>원칙 적합성</td>
+      <td>무극 6원칙 중 최소 3개 이상에서 구체적 사례가 나왔는가? 원칙에 역행하는 행동이 드러나지 않았는가?</td>
+      <td><div class="score-box"></div> / 25</td>
+    </tr>
+    <tr>
+      <td>교차 검증</td>
+      <td>제3자가 확인 가능한 사례가 있는가? 언급된 인물이나 사건이 외부에서 검증될 수 있는가?</td>
+      <td><div class="score-box"></div> / 25</td>
+    </tr>
+  </tbody>
+</table>
+
+<div style="font-family:'Nanum Myeongjo',serif;font-size:18pt;text-align:right;margin-bottom:20px">
+  합계: <span style="border-bottom:2px solid #1a1208;display:inline-block;width:60px">&nbsp;</span> / 100점
+</div>
+
+<div style="font-size:9pt;color:#7a6e5f;margin-bottom:24px">
+  기준: 80점 이상 → 등록 권고 &nbsp;·&nbsp; 60-79점 → 보류 (추가 인터뷰 필요) &nbsp;·&nbsp; 60점 미만 → 탈락
+</div>
+
+<div style="font-size:10pt;letter-spacing:.3em;text-transform:uppercase;color:#7a6e5f;margin-bottom:8px">해당된 무극 원칙 (체크)</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px">
+  <div style="display:flex;align-items:center;gap:6px;"><div class="check-sq"></div><span style="font-size:10pt">① 자기 중심</span></div>
+  <div style="display:flex;align-items:center;gap:6px;"><div class="check-sq"></div><span style="font-size:10pt">② 자기 객관화</span></div>
+  <div style="display:flex;align-items:center;gap:6px;"><div class="check-sq"></div><span style="font-size:10pt">③ 감사의 방향</span></div>
+  <div style="display:flex;align-items:center;gap:6px;"><div class="check-sq"></div><span style="font-size:10pt">④ 흔들림 경계</span></div>
+  <div style="display:flex;align-items:center;gap:6px;"><div class="check-sq"></div><span style="font-size:10pt">⑤ 내면의 하늘</span></div>
+  <div style="display:flex;align-items:center;gap:6px;"><div class="check-sq"></div><span style="font-size:10pt">⑥ 상생의 관계</span></div>
+</div>
+
+<div style="font-size:10pt;letter-spacing:.3em;text-transform:uppercase;color:#7a6e5f;margin-bottom:8px">인상적인 발언 / 특이사항</div>
+<div class="q-answer-lines">
+  <div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div><div class="answer-line"></div>
+</div>
+
+<div class="decision-box" style="margin-top:28px">
+  <div class="decision-title">최종 등록 판정</div>
+  <div class="decision-row"><div class="decision-check"></div><div class="decision-label">✅ 등록 권고 (80점 이상, 경고 신호 없음)</div></div>
+  <div class="decision-row"><div class="decision-check"></div><div class="decision-label">⏸ 보류 — 추가 인터뷰 또는 교차 검증 필요</div></div>
+  <div class="decision-row"><div class="decision-check"></div><div class="decision-label">❌ 탈락 — 기준 미충족 (재신청 6개월 후 가능)</div></div>
+  <div class="decision-reason">
+    <div class="dr-label">판정 이유</div>
+    <div class="dr-lines">
+      <div class="dr-line"></div><div class="dr-line"></div><div class="dr-line"></div>
+    </div>
+  </div>
+</div>
+
+<div class="doc-footer">
+  <div class="df-left">
+    무극의 도 사례 연구 프로젝트<br>
+    인터뷰어 서명: _____________________&nbsp;&nbsp;일자: ___________
+  </div>
+  <div class="df-right">無極</div>
+</div>
+
+</div><!-- page-break -->
+</div><!-- page -->
+</div><!-- section 3 -->
+
+</body>
+</html>
