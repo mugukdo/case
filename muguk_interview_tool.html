@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>무극의 도 — 사례 인터뷰 & 정리 도구</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #14100a;
+  --rice: #f4efe4;
+  --gold: #b8933a;
+  --gold-lt: #dfc27d;
+  --gold-dim: rgba(184,147,58,0.13);
+  --stone: #7a6e5f;
+  --stone-lt: #ccc3b3;
+  --deep: #1e150a;
+  --deep2: #2b1f0f;
+  --accent: #7a2e14;
+  --green: #3a6b3a;
+  --green-lt: rgba(58,107,58,0.12);
+  --red: #8b2a1a;
+  --red-lt: rgba(139,42,26,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--deep);color:#f4efe4;font-family:'Noto Sans KR',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden}
+
+/* LAYOUT */
+.app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:var(--deep2);border-right:1px solid rgba(184,147,58,0.15);padding:32px 24px;display:flex;flex-direction:column;gap:8px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar-brand{font-family:'Nanum Myeongjo',serif;font-size:18px;color:var(--gold-lt);margin-bottom:28px;line-height:1.4}
+.sidebar-brand small{display:block;font-size:10px;letter-spacing:.4em;color:var(--stone);text-transform:uppercase;margin-top:4px}
+.phase-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:2px;cursor:pointer;transition:background .2s;border:1px solid transparent}
+.phase-item.active{background:var(--gold-dim);border-color:rgba(184,147,58,.3)}
+.phase-item.done{opacity:.55}
+.phase-item.locked{opacity:.3;cursor:not-allowed}
+.phase-dot{width:22px;height:22px;border-radius:50%;border:1px solid var(--stone);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px;color:var(--stone);transition:all .3s}
+.phase-item.active .phase-dot{border-color:var(--gold);color:var(--gold)}
+.phase-item.done .phase-dot{background:var(--green);border-color:var(--green);color:white}
+.phase-meta{display:flex;flex-direction:column;gap:3px}
+.phase-title{font-size:13px;color:rgba(244,239,228,.85);letter-spacing:.03em}
+.phase-sub{font-size:11px;color:var(--stone);line-height:1.5}
+
+.verify-score{margin-top:auto;padding:16px;background:rgba(0,0,0,.2);border:1px solid rgba(184,147,58,.15)}
+.vs-label{font-size:9px;letter-spacing:.45em;text-transform:uppercase;color:var(--stone);margin-bottom:12px}
+.vs-bar-wrap{display:flex;flex-direction:column;gap:8px}
+.vs-bar-row{display:flex;align-items:center;gap:8px}
+.vs-bar-label{font-size:11px;color:rgba(244,239,228,.5);width:60px;flex-shrink:0}
+.vs-bar{flex:1;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden}
+.vs-bar-fill{height:100%;border-radius:2px;background:var(--gold);transition:width .5s ease;width:0%}
+.vs-total{margin-top:12px;font-family:'Nanum Myeongjo',serif;font-size:22px;color:var(--gold-lt);text-align:right}
+.vs-total small{font-size:11px;color:var(--stone);font-family:'Noto Sans KR',sans-serif}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;padding:0}
+
+/* PANEL */
+.panel{display:none;flex-direction:column;min-height:100vh;padding:40px 48px}
+.panel.active{display:flex}
+.panel-header{margin-bottom:36px}
+.panel-eyebrow{font-size:10px;letter-spacing:.5em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.panel-title{font-family:'Nanum Myeongjo',serif;font-size:clamp(22px,3vw,32px);color:#f4efe4;line-height:1.35}
+.panel-desc{margin-top:12px;font-size:14px;line-height:1.9;color:rgba(244,239,228,.55)}
+
+/* FORM ELEMENTS */
+.field{margin-bottom:24px}
+.field label{display:block;font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--stone);margin-bottom:8px}
+.field input,.field textarea,.field select{width:100%;padding:12px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(184,147,58,.2);color:#f4efe4;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;transition:border-color .25s;resize:vertical}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold)}
+.field textarea{min-height:100px}
+.field select option{background:var(--deep2);color:#f4efe4}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field-hint{margin-top:6px;font-size:12px;color:var(--stone);line-height:1.6}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.check-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(184,147,58,.15);cursor:pointer;transition:background .2s}
+.check-item:hover{background:rgba(255,255,255,.07)}
+.check-item input[type=checkbox]{width:16px;height:16px;flex-shrink:0;margin-top:2px;accent-color:var(--gold)}
+.check-item-text{font-size:13.5px;line-height:1.8;color:rgba(244,239,228,.8)}
+.check-item-sub{font-size:11.5px;color:var(--stone);margin-top:3px;line-height:1.6}
+
+/* INTERVIEW CHAT */
+.interview-area{display:flex;flex-direction:column;gap:0;flex:1}
+.interview-progress{display:flex;gap:4px;margin-bottom:28px}
+.ip-dot{flex:1;height:3px;background:rgba(255,255,255,.1);transition:background .4s}
+.ip-dot.done{background:var(--gold)}
+.ip-dot.active{background:var(--gold-lt)}
+.q-block{margin-bottom:32px;animation:fadeIn .4s ease}
+.q-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.q-num{font-size:10px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+.q-concept{font-size:10px;padding:3px 10px;border:1px solid rgba(184,147,58,.35);color:var(--gold-lt);letter-spacing:.1em}
+.q-text{font-family:'Nanum Myeongjo',serif;font-size:18px;color:#f4efe4;line-height:1.6;margin-bottom:8px}
+.q-sub{font-size:13px;color:rgba(244,239,228,.45);line-height:1.7;font-style:italic}
+.q-followups{margin-top:12px;padding:14px 16px;background:rgba(184,147,58,.06);border-left:2px solid rgba(184,147,58,.3)}
+.q-followups-label{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.q-followups ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+.q-followups li{font-size:12.5px;color:rgba(244,239,228,.5);line-height:1.6;padding-left:12px;position:relative}
+.q-followups li::before{content:'→';position:absolute;left:0;color:var(--gold);opacity:.5}
+.answer-area{width:100%;min-height:120px;padding:14px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(184,147,58,.2);color:#f4efe4;font-family:'Noto Sans KR',sans-serif;font-size:14px;outline:none;resize:vertical;transition:border-color .25s;line-height:1.9}
+.answer-area:focus{border-color:var(--gold)}
+.answer-nav{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+.answer-hint{font-size:11px;color:var(--stone)}
+
+/* RESULT AREA */
+.result-box{background:rgba(255,255,255,.04);border:1px solid rgba(184,147,58,.2);padding:28px;margin-bottom:24px;position:relative}
+.result-box-label{position:absolute;top:-10px;left:20px;background:var(--deep);padding:0 10px;font-size:10px;letter-spacing:.4em;color:var(--gold);text-transform:uppercase}
+.result-content{font-size:14px;line-height:2;color:rgba(244,239,228,.85);white-space:pre-wrap}
+
+/* VERDICT */
+.verdict{padding:24px 28px;margin-bottom:24px;border:1px solid;display:flex;align-items:flex-start;gap:20px}
+.verdict.pass{border-color:rgba(58,107,58,.5);background:var(--green-lt)}
+.verdict.review{border-color:rgba(184,147,58,.4);background:var(--gold-dim)}
+.verdict.fail{border-color:rgba(139,42,26,.5);background:var(--red-lt)}
+.verdict-icon{font-size:28px;flex-shrink:0}
+.verdict-title{font-family:'Nanum Myeongjo',serif;font-size:18px;margin-bottom:6px}
+.verdict.pass .verdict-title{color:#7bc67b}
+.verdict.review .verdict-title{color:var(--gold-lt)}
+.verdict.fail .verdict-title{color:#e07070}
+.verdict-body{font-size:13px;line-height:1.9;color:rgba(244,239,228,.65)}
+
+/* BUTTONS */
+.btn{padding:12px 28px;border:none;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:12px;letter-spacing:.25em;text-transform:uppercase;transition:all .25s;display:inline-flex;align-items:center;gap:8px}
+.btn-gold{background:var(--gold);color:var(--deep)}
+.btn-gold:hover{background:var(--gold-lt)}
+.btn-outline{background:none;border:1px solid rgba(184,147,58,.4);color:var(--gold-lt)}
+.btn-outline:hover{border-color:var(--gold);background:var(--gold-dim)}
+.btn-ghost{background:none;border:1px solid rgba(255,255,255,.1);color:rgba(244,239,228,.5)}
+.btn-ghost:hover{border-color:rgba(255,255,255,.25);color:#f4efe4}
+.btn-danger{background:none;border:1px solid rgba(139,42,26,.5);color:#e07070}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:24px}
+
+/* LOADING */
+.loading-dots{display:inline-flex;gap:4px;align-items:center}
+.loading-dots span{width:6px;height:6px;border-radius:50%;background:var(--gold-lt);animation:bounce .9s infinite}
+.loading-dots span:nth-child(2){animation-delay:.15s}
+.loading-dots span:nth-child(3){animation-delay:.3s}
+
+/* COPY BOX */
+.copy-box{position:relative;background:rgba(0,0,0,.3);border:1px solid rgba(184,147,58,.2);padding:20px;margin-top:16px}
+.copy-box pre{font-family:'Noto Sans KR',sans-serif;font-size:13px;line-height:1.9;color:rgba(244,239,228,.8);white-space:pre-wrap;word-break:break-word}
+.copy-btn{position:absolute;top:10px;right:10px;padding:6px 14px;background:rgba(184,147,58,.2);border:1px solid rgba(184,147,58,.3);color:var(--gold-lt);font-size:11px;cursor:pointer;letter-spacing:.15em;transition:all .2s}
+.copy-btn:hover{background:rgba(184,147,58,.35)}
+
+/* DIVIDER */
+.divider{height:1px;background:rgba(184,147,58,.12);margin:32px 0}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(184,147,58,.3);border-radius:2px}
+
+@media(max-width:768px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto}
+  .panel{padding:24px}
+  .field-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    無極의 道<br>
+    <small>사례 인터뷰 시스템</small>
+  </div>
+
+  <div class="phase-item active" onclick="goPanel(0)" id="ph0">
+    <div class="phase-dot">1</div>
+    <div class="phase-meta">
+      <div class="phase-title">추천 & 기본 정보</div>
+      <div class="phase-sub">추천인 확인 · 인물 기본 정보</div>
+    </div>
+  </div>
+  <div class="phase-item locked" onclick="goPanel(1)" id="ph1">
+    <div class="phase-dot">2</div>
+    <div class="phase-meta">
+      <div class="phase-title">진위 검증 체크</div>
+      <div class="phase-sub">5단계 검증 기준 확인</div>
+    </div>
+  </div>
+  <div class="phase-item locked" onclick="goPanel(2)" id="ph2">
+    <div class="phase-dot">3</div>
+    <div class="phase-meta">
+      <div class="phase-title">심층 인터뷰</div>
+      <div class="phase-sub">무극 6원칙 기반 질문</div>
+    </div>
+  </div>
+  <div class="phase-item locked" onclick="goPanel(3)" id="ph3">
+    <div class="phase-dot">4</div>
+    <div class="phase-meta">
+      <div class="phase-title">AI 사례 정리</div>
+      <div class="phase-sub">Claude가 사례 카드 자동 생성</div>
+    </div>
+  </div>
+  <div class="phase-item locked" onclick="goPanel(4)" id="ph4">
+    <div class="phase-dot">5</div>
+    <div class="phase-meta">
+      <div class="phase-title">최종 검토 & 등록</div>
+      <div class="phase-sub">검증 결과 · HTML 코드 복사</div>
+    </div>
+  </div>
+
+  <div class="verify-score">
+    <div class="vs-label">검증 점수</div>
+    <div class="vs-bar-wrap">
+      <div class="vs-bar-row"><span class="vs-bar-label">구체성</span><div class="vs-bar"><div class="vs-bar-fill" id="sc1" style="width:0%"></div></div></div>
+      <div class="vs-bar-row"><span class="vs-bar-label">일관성</span><div class="vs-bar"><div class="vs-bar-fill" id="sc2" style="width:0%"></div></div></div>
+      <div class="vs-bar-row"><span class="vs-bar-label">원칙적합</span><div class="vs-bar"><div class="vs-bar-fill" id="sc3" style="width:0%"></div></div></div>
+      <div class="vs-bar-row"><span class="vs-bar-label">교차검증</span><div class="vs-bar"><div class="vs-bar-fill" id="sc4" style="width:0%"></div></div></div>
+    </div>
+    <div class="vs-total" id="totalScore">0 <small>/ 100</small></div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ── PANEL 0: 기본 정보 ── -->
+  <div class="panel active" id="panel0">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Phase 1</div>
+      <div class="panel-title">추천 정보 & 인물 기본 정보</div>
+      <div class="panel-desc">무극의 도 사례는 반드시 추천인을 통해 접수됩니다. 추천인의 실명과 연락처를 먼저 확인하세요.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px">
+      <div>
+        <div style="font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">추천인 정보</div>
+        <div class="field"><label>추천인 실명 *</label><input type="text" id="recName" placeholder="홍길동"></div>
+        <div class="field"><label>추천인 연락처 *</label><input type="text" id="recContact" placeholder="이메일 또는 전화번호"></div>
+        <div class="field"><label>추천인과 대상자의 관계</label>
+          <select id="recRel">
+            <option value="">선택하세요</option>
+            <option>가족 / 친척</option>
+            <option>오랜 친구 (10년 이상)</option>
+            <option>직장 동료 / 상사</option>
+            <option>지역 사회 관계</option>
+            <option>학연</option>
+            <option>기타</option>
+          </select>
+        </div>
+        <div class="field"><label>추천 이유 (간략히)</label><textarea id="recReason" placeholder="왜 이 분을 추천하시나요?"></textarea></div>
+      </div>
+
+      <div>
+        <div style="font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">대상자 정보</div>
+        <div class="field"><label>대상자 이름 (또는 익명 코드) *</label><input type="text" id="subName" placeholder="이름 또는 익명 코드 (예: K-2026-001)"></div>
+        <div class="field-row">
+          <div class="field"><label>국가 / 지역</label><input type="text" id="subCountry" placeholder="예: 대한민국, 서울"></div>
+          <div class="field"><label>연령대</label>
+            <select id="subAge">
+              <option>20대</option><option>30대</option><option>40대</option>
+              <option>50대</option><option>60대 이상</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>직업 / 분야</label><input type="text" id="subJob" placeholder="예: 교사, 자영업, 정치인, 예술가..."></div>
+        <div class="field"><label>인터뷰 방식</label>
+          <select id="interviewType">
+            <option>대면 인터뷰 후 녹취 입력</option>
+            <option>화상 인터뷰 후 녹취 입력</option>
+            <option>서면 답변 제출</option>
+            <option>혼합 방식</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="nextPhase(0)">다음 단계 — 검증 체크 →</button>
+    </div>
+  </div>
+
+  <!-- ── PANEL 1: 검증 체크 ── -->
+  <div class="panel" id="panel1">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Phase 2</div>
+      <div class="panel-title">5단계 진위 검증 기준</div>
+      <div class="panel-desc">인터뷰 전 반드시 확인해야 할 기본 조건입니다. 체크하지 못한 항목이 있다면 인터뷰를 보류하세요.</div>
+    </div>
+
+    <div style="font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">필수 검증 항목</div>
+    <div class="checklist" id="verifyChecklist">
+      <label class="check-item">
+        <input type="checkbox" onchange="updateScore()">
+        <div>
+          <div class="check-item-text">① 추천인 실명제 확인</div>
+          <div class="check-item-sub">추천인의 실명·연락처가 확인되었고, 추천인이 대상자를 직접 알고 있음을 확인했다.</div>
+        </div>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" onchange="updateScore()">
+        <div>
+          <div class="check-item-text">② 구체성 기준 통과 예상</div>
+          <div class="check-item-sub">단순히 "착하게 살았다"가 아닌, 날짜·장소·상황이 있는 구체적 사건을 말할 수 있을 것으로 예상된다.</div>
+        </div>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" onchange="updateScore()">
+        <div>
+          <div class="check-item-text">③ 일관성 검증 협조 동의</div>
+          <div class="check-item-sub">같은 사건을 인터뷰 중 다른 시점에서 재질문할 수 있으며, 대상자가 이에 동의했다.</div>
+        </div>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" onchange="updateScore()">
+        <div>
+          <div class="check-item-text">④ 교차 검증 가능 여부</div>
+          <div class="check-item-sub">가족, 동료, 지인 중 대상자의 이야기를 확인해 줄 수 있는 제3자가 존재한다.</div>
+        </div>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" onchange="updateScore()">
+        <div>
+          <div class="check-item-text">⑤ 무극 6원칙 최소 3개 이상 해당</div>
+          <div class="check-item-sub">사전 대화에서 ①자기중심 ②자기객관화 ③감사방향 ④중심없을때 ⑤사람안의하늘 ⑥상생 중 3개 이상에서 구체적 사례를 말할 수 있을 것으로 판단된다.</div>
+        </div>
+      </label>
+    </div>
+
+    <div style="font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--gold);margin:24px 0 16px">가짜 판별 경고 신호 (해당하면 보류)</div>
+    <div class="checklist">
+      <label class="check-item" style="border-color:rgba(139,42,26,.3)">
+        <input type="checkbox" id="warn1" onchange="updateScore()">
+        <div>
+          <div class="check-item-text" style="color:#e07070">⚠ 자기 자랑이 주목적인 것 같다</div>
+          <div class="check-item-sub">사례보다 명성·지위·성공을 강조하려는 의도가 보인다.</div>
+        </div>
+      </label>
+      <label class="check-item" style="border-color:rgba(139,42,26,.3)">
+        <input type="checkbox" id="warn2" onchange="updateScore()">
+        <div>
+          <div class="check-item-text" style="color:#e07070">⚠ 구체적 사건 없이 추상적 미덕만 나열</div>
+          <div class="check-item-sub">"저는 항상 남을 도우며 살았어요" 같은 일반적 진술만 있다.</div>
+        </div>
+      </label>
+      <label class="check-item" style="border-color:rgba(139,42,26,.3)">
+        <input type="checkbox" id="warn3" onchange="updateScore()">
+        <div>
+          <div class="check-item-text" style="color:#e07070">⚠ 추천인이 대상자 본인 또는 가족뿐</div>
+          <div class="check-item-sub">이해관계 없는 제3자의 추천이 없다.</div>
+        </div>
+      </label>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="goPanel(0)">← 이전</button>
+      <button class="btn btn-gold" onclick="nextPhase(1)" id="btn1">인터뷰 시작 →</button>
+    </div>
+  </div>
+
+  <!-- ── PANEL 2: 인터뷰 ── -->
+  <div class="panel" id="panel2">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Phase 3 — 심층 인터뷰</div>
+      <div class="panel-title">무극의 도 기반 인터뷰 질문지</div>
+      <div class="panel-desc">각 질문에 대한 대상자의 답변을 그대로 입력하세요. 추가 질문(→)은 답변이 충분히 구체적이지 않을 때 사용하세요.</div>
+    </div>
+
+    <div class="interview-progress" id="interviewProgress"></div>
+    <div id="questionArea"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="prevQBtn" onclick="prevQ()" disabled>← 이전 질문</button>
+      <button class="btn btn-gold" id="nextQBtn" onclick="nextQ()">다음 질문 →</button>
+      <button class="btn btn-outline" id="finishInterviewBtn" style="display:none" onclick="nextPhase(2)">인터뷰 완료 — AI 정리 →</button>
+    </div>
+  </div>
+
+  <!-- ── PANEL 3: AI 정리 ── -->
+  <div class="panel" id="panel3">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Phase 4 — AI 사례 정리</div>
+      <div class="panel-title">인터뷰 내용을 사례 카드로 정리</div>
+      <div class="panel-desc">수집된 인터뷰 내용을 Claude가 분석하여 무극의 도 사례 카드 형식으로 정리합니다.</div>
+    </div>
+
+    <div class="result-box" style="margin-bottom:24px">
+      <div class="result-box-label">수집된 인터뷰 요약</div>
+      <div id="interviewSummary" class="result-content" style="font-size:13px;color:rgba(244,239,228,.6)">인터뷰 내용을 불러오는 중...</div>
+    </div>
+
+    <div class="btn-row" id="aiAnalyzeRow">
+      <button class="btn btn-gold" onclick="runAIAnalysis()" id="analyzeBtn">🤖 Claude로 사례 분석 & 정리</button>
+      <span style="font-size:12px;color:var(--stone)">인터뷰 답변 + 무극 6원칙 기반으로 자동 정리됩니다</span>
+    </div>
+
+    <div id="aiResultArea" style="display:none;margin-top:28px">
+      <div class="result-box">
+        <div class="result-box-label">AI 분석 결과</div>
+        <div id="aiResultContent" class="result-content"></div>
+      </div>
+    </div>
+
+    <div class="btn-row" id="toFinalRow" style="display:none">
+      <button class="btn btn-ghost" onclick="goPanel(2)">← 인터뷰 수정</button>
+      <button class="btn btn-gold" onclick="nextPhase(3)">최종 검토 →</button>
+    </div>
+  </div>
+
+  <!-- ── PANEL 4: 최종 검토 & Google Form 제출 ── -->
+  <div class="panel" id="panel4">
+    <div class="panel-header">
+      <div class="panel-eyebrow">Phase 5 — 최종 검토 & 제출</div>
+      <div class="panel-title">Google Form으로 접수 제출</div>
+      <div class="panel-desc">인터뷰 내용과 AI 분석 결과를 관리자에게 제출합니다. 제출 후 검토까지 약 2~4주 소요됩니다.</div>
+    </div>
+
+    <div id="verdictArea"></div>
+
+    <div class="divider"></div>
+
+    <!-- GOOGLE FORM SUBMIT -->
+    <div style="background:rgba(184,147,58,.08);border:1px solid rgba(184,147,58,.25);padding:28px;margin-bottom:24px">
+      <div style="font-size:10px;letter-spacing:.45em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">접수 제출</div>
+      <div style="font-size:13.5px;color:rgba(244,239,228,.7);line-height:2;margin-bottom:20px">
+        아래 버튼을 클릭하면 입력한 모든 인터뷰 내용이 Google Form으로 자동 전송됩니다.<br>
+        제출 후 관리자가 검토하여 등록 여부를 이메일로 안내드립니다.
+      </div>
+      <div id="formSubmitStatus" style="display:none;margin-bottom:16px;padding:12px 16px;border:1px solid;font-size:13px"></div>
+      <div class="btn-row" style="margin-top:0">
+        <button class="btn btn-gold" onclick="submitToGoogleForm()" id="submitFormBtn" style="font-size:13px;padding:14px 32px">
+          📋 Google Form으로 제출하기
+        </button>
+        <span style="font-size:11px;color:var(--stone)">제출 후 확인 이메일이 발송됩니다</span>
+      </div>
+    </div>
+
+    <!-- MANUAL COPY (관리자용 백업) -->
+    <div class="divider"></div>
+    <div style="font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--stone);margin-bottom:12px">관리자 참고 — 전체 인터뷰 텍스트 (복사용)</div>
+    <div style="font-size:12px;color:rgba(244,239,228,.35);margin-bottom:10px">Form 제출이 안 될 경우, 아래 내용을 복사하여 관리자에게 직접 전달하세요.</div>
+    <div class="copy-box">
+      <button class="copy-btn" onclick="copyFullText()">복사</button>
+      <pre id="fullInterviewText" style="max-height:200px;overflow-y:auto;font-size:12px"></pre>
+    </div>
+
+    <div class="btn-row" style="margin-top:32px">
+      <button class="btn btn-ghost" onclick="goPanel(3)">← AI 정리로 돌아가기</button>
+      <button class="btn btn-outline" onclick="resetAll()">↺ 새 인터뷰 시작</button>
+    </div>
+  </div>
+
+</main>
+</div>
+
+<script>
+// ── STATE ──
+const state = {
+  currentPanel: 0,
+  phaseUnlocked: [true, false, false, false, false],
+  currentQ: 0,
+  answers: [],
+  aiResult: null,
+  score: 0
+};
+
+// ── QUESTIONS ──
+const questions = [
+  {
+    phase: '워밍업',
+    concept: null,
+    q: '오늘 이렇게 이야기 나눠주셔서 감사합니다. 먼저 간단히 자기소개를 해 주시겠어요? 어떤 삶을 살아오셨는지, 어릴 때부터 지금까지 큰 흐름으로 이야기해 주세요.',
+    sub: '편안하게 말씀해 주세요. 정답이 없습니다.',
+    followups: ['어린 시절 어떤 환경에서 자라셨나요?', '살면서 가장 크게 영향받은 사건이나 사람이 있다면?']
+  },
+  {
+    phase: '① 자기 중심',
+    concept: '① 자기 중심 vs 이기심',
+    q: '살면서 "나는 이렇게 살겠다"는 기준이나 원칙을 세운 순간이 있으셨나요? 어떤 계기였고, 그 원칙이 무엇이었는지 구체적으로 말씀해 주세요.',
+    sub: '특정 상황이나 사건을 중심으로 이야기해 주세요.',
+    followups: ['그 원칙을 세우기 전과 후에 어떤 변화가 있었나요?', '그 원칙을 지키기 어려웠던 순간은 언제였나요?', '타인의 이익과 자신의 원칙이 충돌했을 때 어떻게 하셨나요?']
+  },
+  {
+    phase: '① 자기 중심',
+    concept: '① 자기 중심 vs 이기심',
+    q: '살면서 주변의 기대나 압박에 "아니오"라고 말한 경험이 있으신가요? 어떤 상황이었고, 어떻게 결정하셨나요?',
+    sub: '구체적인 사례와 당시의 감정을 함께 말씀해 주세요.',
+    followups: ['그 결정이 두려웠나요? 어떻게 극복하셨나요?', '그 결정의 결과는 어떠했나요?']
+  },
+  {
+    phase: '② 자기 객관화',
+    concept: '② 자기 객관화',
+    q: '자신을 돌아보는 습관이나 방법이 있으신가요? 일기, 명상, 혼자만의 시간 등 어떤 방식으로 스스로를 점검하시나요?',
+    sub: '구체적인 루틴이나 방법을 말씀해 주세요.',
+    followups: ['언제부터 그 습관을 시작하셨나요?', '자신의 행동을 되돌아보다가 불편한 진실을 발견한 적이 있나요?', '그것을 어떻게 받아들이고 바꾸셨나요?']
+  },
+  {
+    phase: '② 자기 객관화',
+    concept: '② 자기 객관화',
+    q: '큰 실수나 잘못을 했을 때 어떻게 대처하셨나요? 자기 자신에게 어떻게 솔직해지셨나요?',
+    sub: '되도록 구체적인 사례를 중심으로 이야기해 주세요.',
+    followups: ['그 경험을 통해 무엇을 배우셨나요?', '같은 실수를 반복하지 않기 위해 어떤 노력을 하셨나요?']
+  },
+  {
+    phase: '③ 감사의 방향',
+    concept: '③ 감사의 방향',
+    q: '일상에서 감사를 느끼는 대상이나 순간이 있으신가요? 어떤 것에 가장 많이 감사함을 느끼시나요?',
+    sub: '추상적인 것보다 구체적인 사람이나 사건을 말씀해 주세요.',
+    followups: ['그 감사함을 어떻게 표현하시나요?', '힘든 상황에서도 감사를 찾은 경험이 있나요?']
+  },
+  {
+    phase: '④ 유혹과 흔들림',
+    concept: '④ 자기 중심이 없을 때',
+    q: '살면서 가장 크게 흔들렸던 순간은 언제였나요? 외부의 유혹이나 압박으로 자신의 기준을 잃을 뻔한 경험을 말씀해 주세요.',
+    sub: '그 순간 어떻게 다시 중심을 잡으셨는지도 함께 말씀해 주세요.',
+    followups: ['당시 주변에 그 유혹을 부추기는 사람이 있었나요?', '어떤 계기로 다시 자신의 길로 돌아오셨나요?']
+  },
+  {
+    phase: '⑤ 내면의 힘',
+    concept: '⑤ 사람 안에 하늘이 있다',
+    q: '어렵고 힘든 시기에 버티게 해 준 내면의 힘이 있다면 무엇인가요? 종교, 철학, 특정 신념 등 어떤 것이 내면의 중심이 되었나요?',
+    sub: '외부의 도움이 아닌 자기 자신에게서 나온 힘에 대해 이야기해 주세요.',
+    followups: ['그 내면의 힘은 언제 가장 강하게 느껴졌나요?', '그 힘의 원천이 무엇이라고 생각하시나요?']
+  },
+  {
+    phase: '⑥ 상생의 관계',
+    concept: '⑥ 상생의 관계',
+    q: '주변 사람들과의 관계에서 어떤 원칙을 갖고 계신가요? 사람을 대할 때 가장 중요하게 생각하는 것은 무엇인가요?',
+    sub: '구체적인 관계 방식이나 사례를 이야기해 주세요.',
+    followups: ['돈이나 지위를 보지 않고 사람을 있는 그대로 대한 경험이 있나요?', '관계에서 손해를 봤지만 원칙을 지킨 경험이 있나요?']
+  },
+  {
+    phase: '⑥ 상생의 관계',
+    concept: '⑥ 상생의 관계',
+    q: '살면서 진정으로 "함께 잘 되었다"고 느낀 관계나 프로젝트가 있으신가요? 서로 이롭게 살았다는 경험을 구체적으로 말씀해 주세요.',
+    sub: '일방적 도움이 아닌 상호 성장의 이야기를 기대합니다.',
+    followups: ['그 관계에서 갈등은 없었나요? 어떻게 해결하셨나요?', '그 경험이 지금의 당신에게 어떤 영향을 주었나요?']
+  },
+  {
+    phase: '마무리',
+    concept: null,
+    q: '마지막으로, 지금까지 살아오면서 가장 후회하는 것과 가장 잘했다고 생각하는 것을 하나씩 말씀해 주시겠어요? 그리고 앞으로 어떻게 살고 싶으신가요?',
+    sub: '솔직한 답변을 기대합니다. 완벽하지 않아도 됩니다.',
+    followups: ['그 후회는 지금 어떤 행동의 변화로 이어지고 있나요?', '무극의 도라는 개념에 대해 어떻게 생각하시나요?']
+  }
+];
+
+// ── INIT ──
+function init() {
+  state.answers = new Array(questions.length).fill('');
+  buildProgress();
+  showQuestion(0);
+}
+
+function buildProgress() {
+  const bar = document.getElementById('interviewProgress');
+  bar.innerHTML = questions.map((q,i) =>
+    `<div class="ip-dot" id="ipd${i}"></div>`
+  ).join('');
+}
+
+function showQuestion(idx) {
+  const q = questions[idx];
+  const area = document.getElementById('questionArea');
+  area.innerHTML = `
+    <div class="q-block">
+      <div class="q-header">
+        <span class="q-num">질문 ${idx+1} / ${questions.length}</span>
+        ${q.concept ? `<span class="q-concept">${q.concept}</span>` : `<span class="q-concept" style="border-color:rgba(255,255,255,.1);color:rgba(244,239,228,.35)">${q.phase}</span>`}
+      </div>
+      <div class="q-text">${q.q}</div>
+      ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ''}
+      <div class="q-followups">
+        <div class="q-followups-label">추가 질문 (답변이 부족할 때)</div>
+        <ul>${q.followups.map(f=>`<li>${f}</li>`).join('')}</ul>
+      </div>
+    </div>
+    <textarea class="answer-area" id="answerTA" placeholder="대상자의 답변을 그대로 입력하세요..." onchange="saveAnswer(${idx})">${state.answers[idx]}</textarea>
+    <div class="answer-nav">
+      <span class="answer-hint">가능한 한 대상자의 말을 그대로 입력하세요. 요약보다 원문이 좋습니다.</span>
+    </div>
+  `;
+  updateProgressDots(idx);
+  updateNavButtons(idx);
+}
+
+function saveAnswer(idx) {
+  state.answers[idx] = document.getElementById('answerTA').value;
+}
+
+function updateProgressDots(current) {
+  questions.forEach((_,i) => {
+    const dot = document.getElementById(`ipd${i}`);
+    if(!dot) return;
+    dot.className = 'ip-dot' + (i < current ? ' done' : i === current ? ' active' : '');
+  });
+}
+
+function updateNavButtons(idx) {
+  document.getElementById('prevQBtn').disabled = idx === 0;
+  const isLast = idx === questions.length - 1;
+  document.getElementById('nextQBtn').style.display = isLast ? 'none' : 'inline-flex';
+  document.getElementById('finishInterviewBtn').style.display = isLast ? 'inline-flex' : 'none';
+}
+
+function prevQ() {
+  saveCurrentAnswer();
+  if(state.currentQ > 0) { state.currentQ--; showQuestion(state.currentQ); }
+}
+
+function nextQ() {
+  saveCurrentAnswer();
+  if(state.currentQ < questions.length - 1) { state.currentQ++; showQuestion(state.currentQ); }
+}
+
+function saveCurrentAnswer() {
+  const ta = document.getElementById('answerTA');
+  if(ta) state.answers[state.currentQ] = ta.value;
+}
+
+// ── PHASE NAVIGATION ──
+function goPanel(idx) {
+  if(!state.phaseUnlocked[idx]) return;
+  saveCurrentAnswer();
+  document.querySelectorAll('.panel').forEach((p,i) => {
+    p.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.phase-item').forEach((p,i) => {
+    p.classList.remove('active','locked','done');
+    if(i === idx) p.classList.add('active');
+    else if(state.phaseUnlocked[i]) p.classList.add('done');
+    else p.classList.add('locked');
+    // current is active not done
+    if(i === idx) { p.classList.remove('done'); p.classList.add('active'); }
+  });
+  state.currentPanel = idx;
+}
+
+function nextPhase(from) {
+  if(from === 0) {
+    if(!document.getElementById('recName').value || !document.getElementById('recContact').value || !document.getElementById('subName').value) {
+      alert('추천인 실명, 연락처, 대상자 이름은 필수입니다.');
+      return;
+    }
+  }
+  if(from === 2) {
+    saveCurrentAnswer();
+    buildInterviewSummary();
+  }
+  if(from === 3) {
+    buildFinalPanel();
+  }
+  state.phaseUnlocked[from+1] = true;
+  goPanel(from+1);
+}
+
+// ── SCORE ──
+function updateScore() {
+  const checks = document.querySelectorAll('#verifyChecklist input[type=checkbox]');
+  const warns = [document.getElementById('warn1'), document.getElementById('warn2'), document.getElementById('warn3')];
+  let score = 0;
+  checks.forEach(c => { if(c.checked) score += 20; });
+  warns.forEach(w => { if(w && w.checked) score -= 15; });
+  score = Math.max(0, Math.min(100, score));
+  state.score = score;
+
+  // Update bars
+  const checked = [...checks].filter(c=>c.checked).length;
+  document.getElementById('sc1').style.width = checked >= 2 ? '80%' : checked >= 1 ? '40%' : '0%';
+  document.getElementById('sc2').style.width = checks[2] && checks[2].checked ? '70%' : '0%';
+  document.getElementById('sc3').style.width = checks[4] && checks[4].checked ? '90%' : '0%';
+  document.getElementById('sc4').style.width = checks[3] && checks[3].checked ? '75%' : '0%';
+  document.getElementById('totalScore').innerHTML = `${score} <small>/ 100</small>`;
+
+  const btn = document.getElementById('btn1');
+  if(btn) {
+    const warnCount = warns.filter(w=>w&&w.checked).length;
+    btn.disabled = score < 60 || warnCount >= 2;
+    btn.textContent = score < 60 ? '점수 부족 (60점 이상 필요)' : '인터뷰 시작 →';
+  }
+}
+
+// ── INTERVIEW SUMMARY ──
+function buildInterviewSummary() {
+  const sub = document.getElementById('subName').value;
+  const job = document.getElementById('subJob').value;
+  let summary = `대상자: ${sub} (${job})\n추천인: ${document.getElementById('recName').value}\n검증 점수: ${state.score}/100\n\n`;
+  questions.forEach((q,i) => {
+    if(state.answers[i]) {
+      summary += `[${q.phase}] ${q.q}\n답변: ${state.answers[i]}\n\n`;
+    }
+  });
+  document.getElementById('interviewSummary').textContent = summary;
+}
+
+// ── AI ANALYSIS ──
+async function runAIAnalysis() {
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div> 분석 중...';
+
+  const subName = document.getElementById('subName').value;
+  const subJob = document.getElementById('subJob').value;
+  const subCountry = document.getElementById('subCountry').value;
+  const subAge = document.getElementById('subAge').value;
+
+  let interviewText = '';
+  questions.forEach((q,i) => {
+    if(state.answers[i] && state.answers[i].trim()) {
+      interviewText += `\n[${q.phase} — ${q.q}]\n답변: ${state.answers[i]}\n`;
+    }
+  });
+
+  const prompt = `당신은 '무극의 도' 사례 연구 전문 분석가입니다.
+
+무극의 도의 6가지 핵심 개념:
+① 자기 중심 vs 이기심: 나를 주인공으로 살되, 이기적으로 타인에게 피해를 주지 않는다
+② 자기 객관화: 복기(復棋)의 습관 — 내 행동을 되돌아보는 훈련
+③ 감사의 방향: 보이지 않는 신이 아닌 실제로 은혜를 준 존재에게 감사
+④ 자기 중심이 없을 때: 귀가 얇아지고 외부에 의지하게 되는 상태 경계
+⑤ 사람 안에 하늘이 있다: 人中天地一 — 내면에서 중심을 찾는다
+⑥ 상생의 관계: 각자의 중심을 유지하며 서로 이롭게 살아간다
+
+대상자 정보:
+- 이름/코드: ${subName}
+- 직업/분야: ${subJob}
+- 국가/지역: ${subCountry}
+- 연령대: ${subAge}
+
+인터뷰 내용:
+${interviewText}
+
+위 인터뷰를 분석하여 다음 형식으로 사례 보고서를 작성하세요:
+
+=== 무극의 도 사례 보고서 ===
+
+【사례 제목】
+(이 사람의 삶을 한 문장으로 — 예: "선을 지키며 느리게 간 삶")
+
+【부제】
+(직업/배경/주요 특징을 짧게)
+
+【핵심 사례 요약】
+(3~4 단락. 구체적인 사건과 행동 중심. 추상적 미덕 나열 금지)
+
+【인상적인 말 / 일화】
+(인터뷰에서 나온 인상적인 발언이나 사건 하나를 인용)
+
+【해당 무극 원칙】
+(①~⑥ 중 해당하는 것을 모두 나열하고 각각 한 줄 설명)
+
+【핵심 교훈 (4가지)】
+(구체적이고 실천 가능한 교훈 4가지)
+
+【등록 권고】
+- 등록 권고 / 보류 권고 / 탈락 권고
+- 이유: (2~3문장)
+- 검증 필요 사항: (있다면)`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '분석 결과를 가져오지 못했습니다.';
+    state.aiResult = text;
+
+    document.getElementById('aiResultArea').style.display = 'block';
+    document.getElementById('aiResultContent').textContent = text;
+    document.getElementById('toFinalRow').style.display = 'flex';
+    btn.innerHTML = '✓ 분석 완료';
+    btn.style.background = 'var(--green)';
+
+    updateScoreBars();
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '🤖 Claude로 사례 분석 & 정리';
+    document.getElementById('aiResultArea').style.display = 'block';
+    document.getElementById('aiResultContent').textContent = '⚠ API 연결 오류가 발생했습니다.\n\n아래 수동 정리 방법을 사용하세요:\n1. 인터뷰 내용 전체를 복사\n2. Claude.ai에서 새 대화 시작\n3. "무극의 도 사례 분석가로서 다음 인터뷰를 분석해줘" 라고 입력 후 내용 붙여넣기';
+    document.getElementById('toFinalRow').style.display = 'flex';
+  }
+}
+
+function updateScoreBars() {
+  if(!state.aiResult) return;
+  const text = state.aiResult.toLowerCase();
+  const hasSpecific = text.includes('구체') || text.includes('사건') || text.includes('경험');
+  const hasConsistent = !text.includes('불일치') && !text.includes('모순');
+  const hasPrinciple = text.includes('①') || text.includes('②') || text.includes('③');
+  const hasVerify = text.includes('검증') || text.includes('확인');
+
+  document.getElementById('sc1').style.width = hasSpecific ? '85%' : '40%';
+  document.getElementById('sc2').style.width = hasConsistent ? '75%' : '30%';
+  document.getElementById('sc3').style.width = hasPrinciple ? '90%' : '50%';
+  document.getElementById('sc4').style.width = hasVerify ? '60%' : '20%';
+}
+
+// ── GOOGLE FORM 설정 ──
+// TODO: Google Form 만든 후 아래 값을 교체하세요
+// 방법: Google Form → 응답 → ⋮ → 사전 작성된 링크 가져오기
+const GOOGLE_FORM_CONFIG = {
+  // Google Form 제출 URL (action URL)
+  // Form URL의 /viewform을 /formResponse로 바꾸세요
+  formUrl: 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse',
+
+  // 각 필드의 entry ID (Form 소스에서 확인)
+  fields: {
+    recName:       'entry.000000001',  // 추천인 이름
+    recContact:    'entry.000000002',  // 추천인 연락처
+    recRel:        'entry.000000003',  // 추천인 관계
+    recReason:     'entry.000000004',  // 추천 이유
+    subName:       'entry.000000005',  // 대상자 이름
+    subCountry:    'entry.000000006',  // 국가/지역
+    subAge:        'entry.000000007',  // 연령대
+    subJob:        'entry.000000008',  // 직업/분야
+    interviewType: 'entry.000000009', // 인터뷰 방식
+    verifyScore:   'entry.000000010', // 검증 점수
+    interviewFull: 'entry.000000011', // 전체 인터뷰 내용
+    aiAnalysis:    'entry.000000012', // AI 분석 결과
+  }
+};
+
+// ── GOOGLE FORM 제출 ──
+function submitToGoogleForm() {
+  const btn = document.getElementById('submitFormBtn');
+  const status = document.getElementById('formSubmitStatus');
+
+  // 폼 데이터 수집
+  const data = {
+    recName:       document.getElementById('recName').value,
+    recContact:    document.getElementById('recContact').value,
+    recRel:        document.getElementById('recRel').value,
+    recReason:     document.getElementById('recReason').value,
+    subName:       document.getElementById('subName').value,
+    subCountry:    document.getElementById('subCountry').value,
+    subAge:        document.getElementById('subAge').value,
+    subJob:        document.getElementById('subJob').value,
+    interviewType: document.getElementById('interviewType').value,
+    verifyScore:   String(state.score),
+    interviewFull: buildFullText(),
+    aiAnalysis:    state.aiResult || '(AI 분석 미실행)',
+  };
+
+  // Form URL이 설정되지 않은 경우
+  if(GOOGLE_FORM_CONFIG.formUrl.includes('YOUR_FORM_ID')) {
+    status.style.display = 'block';
+    status.style.borderColor = 'rgba(184,147,58,.5)';
+    status.style.background = 'rgba(184,147,58,.08)';
+    status.style.color = 'var(--gold-lt)';
+    status.innerHTML = `⚠ Google Form URL이 아직 설정되지 않았습니다.<br>
+    <span style="font-size:12px;opacity:.7">관리자: muguk_interview_tool.html 상단 GOOGLE_FORM_CONFIG를 수정하세요.</span><br><br>
+    <strong>임시 방법:</strong> 아래 "전체 인터뷰 텍스트 복사" 후 관리자에게 직접 전달하세요.`;
+    // 그래도 텍스트는 채워주기
+    document.getElementById('fullInterviewText').textContent = buildFullText();
+    return;
+  }
+
+  // URL 파라미터 빌드
+  const params = new URLSearchParams();
+  Object.entries(GOOGLE_FORM_CONFIG.fields).forEach(([key, entryId]) => {
+    if(data[key]) params.append(entryId, data[key]);
+  });
+
+  btn.disabled = true;
+  btn.textContent = '제출 중...';
+
+  // iframe을 통한 백그라운드 제출 (CORS 우회)
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.name = 'formSubmitFrame';
+  document.body.appendChild(iframe);
+
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = GOOGLE_FORM_CONFIG.formUrl;
+  form.target = 'formSubmitFrame';
+
+  Object.entries(GOOGLE_FORM_CONFIG.fields).forEach(([key, entryId]) => {
+    if(data[key]) {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = entryId;
+      input.value = data[key];
+      form.appendChild(input);
+    }
+  });
+
+  document.body.appendChild(form);
+  form.submit();
+
+  setTimeout(() => {
+    document.body.removeChild(form);
+    document.body.removeChild(iframe);
+    btn.textContent = '✓ 제출 완료';
+    btn.style.background = 'var(--green)';
+    status.style.display = 'block';
+    status.style.borderColor = 'rgba(58,107,58,.5)';
+    status.style.background = 'var(--green-lt)';
+    status.style.color = '#7bc67b';
+    status.innerHTML = `✅ 접수가 완료되었습니다.<br>
+    <span style="font-size:12px;opacity:.8">관리자가 검토 후 2~4주 내에 연락드립니다. 추천인 연락처로 결과를 통보합니다.</span>`;
+    document.getElementById('fullInterviewText').textContent = buildFullText();
+  }, 2000);
+}
+
+function buildFullText() {
+  let text = `=== 무극의 도 사례 접수 ===\n`;
+  text += `접수일시: ${new Date().toLocaleString('ko-KR')}\n`;
+  text += `검증 점수: ${state.score}/100\n\n`;
+  text += `[추천인]\n`;
+  text += `이름: ${document.getElementById('recName').value}\n`;
+  text += `연락처: ${document.getElementById('recContact').value}\n`;
+  text += `관계: ${document.getElementById('recRel').value}\n`;
+  text += `추천 이유: ${document.getElementById('recReason').value}\n\n`;
+  text += `[대상자]\n`;
+  text += `이름: ${document.getElementById('subName').value}\n`;
+  text += `국가/지역: ${document.getElementById('subCountry').value}\n`;
+  text += `연령대: ${document.getElementById('subAge').value}\n`;
+  text += `직업: ${document.getElementById('subJob').value}\n\n`;
+  text += `[인터뷰 내용]\n`;
+  questions.forEach((q,i) => {
+    if(state.answers[i] && state.answers[i].trim()) {
+      text += `\n[${q.phase}]\nQ: ${q.q}\nA: ${state.answers[i]}\n`;
+    }
+  });
+  if(state.aiResult) {
+    text += `\n[AI 분석 결과]\n${state.aiResult}`;
+  }
+  return text;
+}
+
+// ── FINAL PANEL ──
+function buildFinalPanel() {
+  const result = state.aiResult || '';
+
+  let verdictClass = 'review', verdictIcon = '🔍', verdictTitle = '검토 필요';
+  let verdictBody = 'AI 분석 결과를 검토하고 최종 판단해 주세요.';
+  if(result.includes('등록 권고') && !result.includes('보류') && !result.includes('탈락')) {
+    verdictClass='pass'; verdictIcon='✅'; verdictTitle='등록 권고';
+    verdictBody='AI 분석 결과 무극의 도 원칙에 부합하는 사례입니다. Google Form으로 제출하세요.';
+  } else if(result.includes('탈락')) {
+    verdictClass='fail'; verdictIcon='❌'; verdictTitle='등록 탈락';
+    verdictBody='현재 인터뷰 내용만으로는 등록 기준을 충족하지 못합니다. 추가 인터뷰가 필요합니다.';
+  } else if(result.includes('보류')) {
+    verdictClass='review'; verdictIcon='⏸'; verdictTitle='보류 — 추가 검증 필요';
+    verdictBody='일부 내용이 더 구체화되어야 합니다. 그래도 제출하면 관리자가 추가 인터뷰를 진행합니다.';
+  }
+
+  document.getElementById('verdictArea').innerHTML = `
+    <div class="verdict ${verdictClass}">
+      <div class="verdict-icon">${verdictIcon}</div>
+      <div>
+        <div class="verdict-title">${verdictTitle}</div>
+        <div class="verdict-body">${verdictBody}</div>
+      </div>
+    </div>
+    ${result ? `<div class="result-box"><div class="result-box-label">AI 분석 원문</div><div class="result-content" style="max-height:220px;overflow-y:auto">${result}</div></div>` : ''}
+  `;
+
+  // 전체 텍스트 미리 채우기
+  document.getElementById('fullInterviewText').textContent = buildFullText();
+}
+
+function generateCaseHTML() {
+  const subName = document.getElementById('subName').value;
+  const subJob = document.getElementById('subJob').value;
+  const subCountry = document.getElementById('subCountry').value;
+  const result = state.aiResult || '';
+
+  // Extract sections from AI result
+  const titleMatch = result.match(/【사례 제목】\s*\n([^\n【]+)/);
+  const subMatch = result.match(/【부제】\s*\n([^\n【]+)/);
+  const summaryMatch = result.match(/【핵심 사례 요약】\s*\n([\s\S]*?)(?=【|$)/);
+  const quoteMatch = result.match(/【인상적인 말[^】]*】\s*\n([\s\S]*?)(?=【|$)/);
+  const principleMatch = result.match(/【해당 무극 원칙】\s*\n([\s\S]*?)(?=【|$)/);
+  const lessonsMatch = result.match(/【핵심 교훈[^】]*】\s*\n([\s\S]*?)(?=【|$)/);
+
+  const title = titleMatch ? titleMatch[1].trim() : subName;
+  const subtitle = subMatch ? subMatch[1].trim() : `${subJob} · ${subCountry}`;
+  const summary = summaryMatch ? summaryMatch[1].trim() : '';
+  const quote = quoteMatch ? quoteMatch[1].trim() : '';
+  const principles = principleMatch ? principleMatch[1].trim() : '';
+  const lessons = lessonsMatch ? lessonsMatch[1].trim() : '';
+
+  const paraHTML = summary.split('\n').filter(Boolean).map(p => `<p>${p}</p>`).join('\n            ');
+
+  const lessonItems = lessons.split('\n').filter(l=>l.trim() && !l.startsWith('(')).slice(0,4).map(l =>
+    `<div class="lesson"><div class="ldot"></div><div class="ltext">${l.replace(/^[\d\-\.\•·\*]+\s*/,'')}</div></div>`
+  ).join('\n            ');
+
+  const principleTagsRaw = principles.split('\n').filter(p=>p.match(/[①②③④⑤⑥]/));
+  const principleTagsHTML = principleTagsRaw.map(p => {
+    const m = p.match(/([①②③④⑤⑥][^:：\n]*)/);
+    return m ? `<span class="ctag">${m[1].trim()}</span>` : '';
+  }).join('');
+
+  const html = `<!-- 사례: ${subName} | 생성일: ${new Date().toLocaleDateString('ko-KR')} -->
+<div class="case-card">
+  <div class="case-card-header" onclick="toggleCase(this)">
+    <div class="case-num">??</div>
+    <div class="case-meta">
+      <span class="case-cat">${subJob || '미분류'}</span>
+      <div class="case-title">${title}</div>
+      <div class="case-subtitle">${subtitle}</div>
+    </div>
+    <div class="case-ctags">${principleTagsHTML || '<span class="ctag">검토 중</span>'}</div>
+    <button class="expand-btn"><span>열기</span><span class="expand-icon">+</span></button>
+  </div>
+  <div class="case-body">
+    <div class="case-body-inner">
+      <div class="case-summary">
+        ${paraHTML || '<p>내용을 직접 입력하세요.</p>'}
+        ${quote ? `<div class="qblock"><div class="qmark">"</div><div class="qtext">${quote}</div></div>` : ''}
+      </div>
+      <div class="case-sidebar">
+        <div class="sidebar-label">핵심 교훈</div>
+        ${lessonItems || '<div class="ltext">교훈을 직접 입력하세요.</div>'}
+        ${principleTagsHTML ? `<div class="concept-link"><div class="cl-label">관련 핵심 개념</div><div class="cl-tags">${principleTagsHTML}</div></div>` : ''}
+      </div>
+    </div>
+  </div>
+</div>`;
+
+  document.getElementById('generatedHTML').textContent = html;
+}
+
+function copyFullText() {
+  const text = document.getElementById('fullInterviewText').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ 복사됨';
+    btn.style.color = '#7bc67b';
+    setTimeout(() => { btn.textContent = '복사'; btn.style.color = ''; }, 2000);
+  });
+}
+
+function resetAll() {
+  if(!confirm('모든 입력 내용이 초기화됩니다. 계속하시겠습니까?')) return;
+  state.currentPanel = 0;
+  state.phaseUnlocked = [true, false, false, false, false];
+  state.currentQ = 0;
+  state.answers = new Array(questions.length).fill('');
+  state.aiResult = null;
+  state.score = 0;
+  ['sc1','sc2','sc3','sc4'].forEach(id => document.getElementById(id).style.width = '0%');
+  document.getElementById('totalScore').innerHTML = '0 <small>/ 100</small>';
+  document.getElementById('aiResultArea').style.display = 'none';
+  document.getElementById('toFinalRow').style.display = 'none';
+  const analyzeBtn = document.getElementById('analyzeBtn');
+  if(analyzeBtn) { analyzeBtn.disabled = false; analyzeBtn.innerHTML = '🤖 Claude로 사례 분석 & 정리'; analyzeBtn.style.background = ''; }
+  goPanel(0);
+  document.querySelectorAll('input[type=text], textarea, select').forEach(el => el.value = el.tagName === 'SELECT' ? el.options[0].value : '');
+  document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+}
+
+// ── START ──
+init();
+updateScore();
+</script>
+</body>
+</html>
